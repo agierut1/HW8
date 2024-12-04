@@ -1,6 +1,6 @@
 /******************************************************************
  *
- *   ADD YOUR NAME / SECTION NUMBER HERE
+ *  ALEX GIERUT / 002
  *
  *   This java file contains the problem solutions of canFinish and
  *   numGroups methods.
@@ -72,18 +72,37 @@ class ProblemSolutions {
      * @return boolean          - True if all exams can be taken, else false.
      */
 
-    public boolean canFinish(int numExams, 
-                             int[][] prerequisites) {
-      
-        int numNodes = numExams;  // # of nodes in graph
-
-        // Build directed graph's adjacency list
-        ArrayList<Integer>[] adj = getAdjList(numExams, 
-                                        prerequisites); 
-
-        // ADD YOUR CODE HERE - ADD YOUR NAME / SECTION AT TOP OF FILE
-        return false;
-
+    public boolean canFinish(int numExams, int[][] prerequisites) {
+        int numNodes = numExams;
+        ArrayList<Integer>[] adj = getAdjList(numExams, prerequisites);
+        int[] prereqCount = new int[numNodes];
+        Queue<Integer> queue = new LinkedList<>();
+        for(int i = 0; i < numNodes; i++) {
+            for(int x : adj[i]) {
+                prereqCount[x] += 1;
+            }
+        }
+        for(int j = 0; j < numNodes; j++) {
+            if(prereqCount[j] == 0) {
+                queue.add(j);
+            }
+        }
+        int reqMet = 0;
+        while(!queue.isEmpty()) {
+            int node = queue.poll();
+            reqMet += 1;
+            for(int x : adj[node]) {
+                prereqCount[x]--;
+                if(prereqCount[x] == 0) {
+                    queue.add(x);
+                }
+            }
+        }
+        if(reqMet == numExams) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
@@ -166,7 +185,10 @@ class ProblemSolutions {
     public int numGroups(int[][] adjMatrix) {
         int numNodes = adjMatrix.length;
         Map<Integer,List<Integer>> graph = new HashMap();
-        int i = 0, j =0;
+        int i = 0, j = 0;
+        int count = 0;
+        Stack<Integer> stack = new Stack<>();
+        Set<Integer> checked = new HashSet<>();
 
         /*
          * Converting the Graph Adjacency Matrix to
@@ -181,7 +203,6 @@ class ProblemSolutions {
                     graph.putIfAbsent(i, new ArrayList());
                     // Add AdjList for node j if not there
                     graph.putIfAbsent(j, new ArrayList());
-
                     // Update node i adjList to include node j
                     graph.get(i).add(j);
                     // Update node j adjList to include node i
@@ -189,10 +210,26 @@ class ProblemSolutions {
                 }
             }
         }
-
-        // YOUR CODE GOES HERE - you can add helper methods, you do not need
-        // to put all code in this method.
-        return -1;
+        for(int k = 0; k < numNodes; k++) {
+            if(!checked.contains(k)) {
+                stack.push(k);
+                while(!stack.isEmpty()) {
+                    int node = stack.pop();
+                    if(!checked.contains(node)) {
+                        checked.add(node);
+                        if(graph.containsKey(node)) {
+                            for(int x : graph.get(node)) {
+                                if(!checked.contains(x)) {
+                                    stack.push(x);
+                                }
+                            }
+                        }
+                    }
+                }
+                count += 1;
+            }
+        }
+        return count;
     }
-
 }
+

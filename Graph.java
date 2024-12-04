@@ -1,6 +1,6 @@
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   ALEX GIERUT / 002
  *
  *   Note, additional comments provided throughout this source code
  *   is for educational purposes
@@ -38,10 +38,10 @@ public class Graph {
 
   /*
    * method setValue
-   * 
+   *
    * Sets a vertex's (node's) value.
-   */ 
-  
+   */
+
   public void setValue(int vertexIndex, int value) {
     if (vertexIndex >= 0 && vertexIndex < numVertices) {
       vertexValues.set(vertexIndex, value);
@@ -58,10 +58,10 @@ public class Graph {
 
   /*
    * method printGraph
-   * 
+   *
    * Prints the graph as an adjacency matrix
-   */ 
-  
+   */
+
   public void printGraph() {
     System.out.println(
          "\nAdjacency Matrix Representation:\n");
@@ -99,12 +99,29 @@ public class Graph {
    * This method returns the value of the root vertex, where root is defined in
    * this case as a node that has no incoming edges. If no root vertex is found
    * and/or more than one root vertex, then return -1.
-   * 
+   *
    */
-  
-  public int findRoot() {
 
-    // ADD YOUR CODE HERE - DO NOT FORGET TO ADD YOUR NAME/SECTION AT TOP OF FILE
-    return -1;
-  } 
+  public int findRoot() {
+    int[] edgeCount = new int[numVertices];
+    for(int i = 0; i < numVertices; i++) {
+      for(int node : adjListArr[i]) {
+        edgeCount[node]++;
+      }
+    }
+    int root = -1;
+    for(int j = 0; j < numVertices; j++) {
+      if(edgeCount[j] == 0) {
+        if(root != -1) {
+          return -1;
+        }
+        root = j;
+      }
+    }
+    if(root == -1) {
+      return -1;
+    } else {
+      return vertexValues.get(root);
+    }
+  }
 }
